@@ -71,6 +71,11 @@ namespace AdeDl.App.Services
                 await _browserService.GoToAsync(urlSostituto);
                 var sostituto = await _browserService.ActAsync<string>(jsSelectSostituto);
 
+                if (sostituto.Length > 30)
+                {
+                    sostituto = sostituto.Substring(0, 30);
+                }                
+                
                 await Task.Delay(1000);
                 
                 var newCookies = _browserService.GetCookies();
