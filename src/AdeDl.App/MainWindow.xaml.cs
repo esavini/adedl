@@ -34,6 +34,9 @@ namespace AdeDl.App
             var path = Path.Combine(docsPath, "AdeDl", "utenti.csv");
 
             if (File.Exists(path)) return;
+
+            if(!Directory.Exists(Path.Combine(docsPath, "AdeDl")))
+                Directory.CreateDirectory(Path.Combine(docsPath, "AdeDl"));
             
             using var file = File.CreateText(path);
             file.WriteLine(@"username,password,pin,delega");

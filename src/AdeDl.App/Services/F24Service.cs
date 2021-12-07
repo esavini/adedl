@@ -124,6 +124,16 @@ namespace AdeDl.App.Services
 
                     url += $"&indice={i.ToString()}&ProtTelem={protoSplitted[0]}&ProgrTelem={protoSplitted[1]}";
 
+                    var dir = new DirectoryInfo(path);
+
+                    foreach (var file in dir.EnumerateFiles())
+                    {
+                        if (file.Name.EndsWith("F24 Quietanza.pdf"))
+                        {
+                            file.Delete();
+                        }
+                    }
+
                     finalPath = Path.Combine(path, data + " - " + progressivo + "." + (i + 1) + " - F24.pdf");
                     finalPathQuietanza = Path.Combine(path,
                         data + " - " + progressivo + "." + (i + 1) + " - F24 Quietanza.pdf");
