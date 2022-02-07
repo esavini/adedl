@@ -7,12 +7,13 @@
         <Title>AdeDl</Title>
         <Authors>sav.edo</Authors>
         <Company>Edoardo Savini</Company>
+        <DebugType>portable</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="27.1.1" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
-      <PackageReference Include="PuppeteerSharp" Version="5.1.0" />
+      <PackageReference Include="CsvHelper" Version="27.2.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+      <PackageReference Include="PuppeteerSharp" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>

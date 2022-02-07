@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,18 +44,17 @@ namespace AdeDl.App.Services
 
             _browser = await Puppeteer.LaunchAsync(launchOptions);
             var pages = await _browser.PagesAsync();
-
-
+            
             var firstPage = pages.First();
 
-            firstPage.DOMContentLoaded += async (_, _) =>
+            firstPage.RequestFinished += async (_, _) =>
             {
                 var cookies = await firstPage.GetCookiesAsync();
-                _cookies = cookies;
+                _cookies = cookies.ToArray();
 
                 if (doneFunc is null) return;
 
-                if (!doneFunc(cookies)) return;
+                if (!doneFunc(_cookies.ToArray())) return;
 
                 callback?.Invoke();
                 await firstPage.CloseAsync();

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AdeDl.App": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

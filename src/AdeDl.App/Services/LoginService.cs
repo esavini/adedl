@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AdeDl.App.Models;
@@ -21,15 +22,20 @@ namespace AdeDl.App.Services
         {
             bool done = false;
             await _browserService.CreateClientAsync(false, VerifyAuthCookiesWasCreated, () => done = true);
-            await _browserService.GoToAsync("https://telematici.agenziaentrate.gov.it/Main/login.jsp");
-            await _browserService.ActAsync(@$"document.getElementById('nome_utente_ar').value=""{credentials.Username}""");
-            await _browserService.ActAsync(@$"document.getElementById('password_ar').value=""{credentials.Password}""");
-            await _browserService.ActAsync(@$"document.getElementById('codicepin').value=""{credentials.Pin}""");
-            await _browserService.ActAsync(@"document.querySelector(""input[type='submit'].conferma"").click()");
+            await _browserService.GoToAsync("https://iampe.agenziaentrate.gov.it/sam/UI/Login?realm=/agenziaentrate");
+            await _browserService.ActAsync(@"document.getElementById(""tab-form"").click()");
+            await _browserService.ActAsync(
+                @$"document.getElementById('username-fo-ent').value=""{credentials.Username}""");
+            await _browserService.ActAsync(
+                @$"document.getElementById('password-fo-ent').value=""{credentials.Password}""");
+            await _browserService.ActAsync(@$"document.getElementById('pin-fo-ent').value=""{credentials.Pin}""");
+            await _browserService.ActAsync(@"document.querySelector(""#tab-fo-ent .btn-accedi"").click()");
             
             // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
-            while(!done) {}
-            
+            while (!done)
+            {
+            }
+
             var cookies = _browserService.GetCookies();
             var result = VerifyAuthCookiesWasCreated(cookies);
 
@@ -42,7 +48,9 @@ namespace AdeDl.App.Services
 
         public string FiscalCode { get; private set; }
 
-        private bool VerifyAuthCookiesWasCreated(IEnumerable<CookieParam> cookies) =>
-            cookies?.FirstOrDefault(c => c.Name == AuthCookieName)?.Value is not null;
+        private bool VerifyAuthCookiesWasCreated(IEnumerable<CookieParam> cookies)
+        {
+            return cookies?.FirstOrDefault(c => c.Name == AuthCookieName)?.Value is not null;
+        }
     }
 }
