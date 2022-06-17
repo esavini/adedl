@@ -62,6 +62,8 @@ namespace AdeDl.App.Services
 
             await Task.Delay(2000);
 
+            var sosCounter = new Dictionary<string, int>();
+
             for (var i = 0; i < cus.Length; i++)
             {
                 var cu = cus[i];
@@ -73,8 +75,15 @@ namespace AdeDl.App.Services
 
                 if (sostituto.Length > 30)
                 {
-                    sostituto = sostituto.Substring(0, 30);
-                }                
+                    sostituto = sostituto[..30];
+                }
+
+                var isDuplicated = sostituti.Count(s => s == sostituto) > 1;
+
+                if (isDuplicated && !sosCounter.ContainsKey(sostituto))
+                {
+                    sosCounter[sostituto] = 1;
+                }
                 
                 await Task.Delay(1000);
                 
@@ -96,8 +105,15 @@ namespace AdeDl.App.Services
                     $"CU {(fiscalCode.CuYear + 1).ToString()} anno {fiscalCode.CuYear}");
                 Directory.CreateDirectory(cuPath);
 
+                var counterString = string.Empty;
+
+                if (isDuplicated)
+                {
+                    counterString = $" -{sosCounter[sostituto]++}";
+                }
+                
                 var filePath = Path.Combine(cuPath,
-                    $"CU {(fiscalCode.CuYear + 1).ToString()} anno {fiscalCode.CuYear} - {sostituto} - Cassetto Fiscale.pdf");
+                    $"CU {(fiscalCode.CuYear + 1).ToString()} anno {fiscalCode.CuYear} - {sostituto} - Cassetto Fiscale{counterString}.pdf");
 
                 if (File.Exists(filePath)) continue;
 
