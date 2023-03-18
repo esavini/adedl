@@ -1,4 +1,5 @@
 ﻿@using AdeDl.BlazorApp.Models
+@using AdeDl.BlazorApp.Models.Operations
 <p>
     @if (_selectedCustomersCount == 1)
     {
@@ -14,8 +15,10 @@
     <input class="form-check-input"
            type="checkbox"
            checked="@IsOperationSelected(typeof(Anagrafica))"
-           id="anagrafica">
-    <label class="form-check-label" for="anagrafica">
+           id="anagrafica"
+           @onchange="ToggleAnagrafica">
+    <label class="form-check-label"
+           for="anagrafica">
         Anagrafica
     </label>
 </div>
@@ -24,27 +27,88 @@
     <input class="form-check-input"
            type="checkbox"
            checked="@IsOperationSelected(typeof(F24))"
-           id="f24">
+           id="f24"
+           @onchange="ToggleF24">
     <label class="form-check-label"
            for="f24">
         F24
     </label>
 </div>
 
+@if (IsOperationSelected(typeof(F24)))
+{
+    <div class="mt-2">
+        <div class="form-floating">
+            <select class="form-select"
+                    id="floatingSelectGrid"
+                    @onchange="ChangeF24Year">
+                @for (var i = DateTime.Now.Year; i >= 2015; i--)
+                {
+                    <option value="@i"
+                            selected="@IsF24Selected(i)">
+                        @i
+                    </option>
+                }
+            </select>
+            <label for="floatingSelectGrid">
+                Anno F24
+            </label>
+        </div>
+    </div>
+}
+
 <div class="form-check mt-3">
     <input class="form-check-input"
            type="checkbox"
            checked="@IsOperationSelected(typeof(Cu))"
-           id="cu">
+           id="cu"
+           @onchange="ToggleCu">
     <label class="form-check-label"
            for="cu">
         CU
     </label>
 </div>
 
-<button type="button"
-        role="button"
-        class="btn btn-lg btn-primary mt-3"
-        disabled>
-    Scarica
-</button>
+@if (IsOperationSelected(typeof(Cu)))
+{
+    <div class="mt-2">
+        <div class="form-floating">
+            <select class="form-select"
+                    id="floatingSelectGrid"
+                    @onchange="ChangeCuYear">
+                @for (var i = DateTime.Now.Year; i >= 2015; i--)
+                {
+                    <option value="@i"
+                            selected="@IsCuSelected(i)">
+                        @i redditi @(i - 1)
+                    </option>
+                }
+            </select>
+            <label for="floatingSelectGrid">
+                Anno CU
+            </label>
+        </div>
+    </div>
+}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+
+    <button type="button"
+            role="button"
+            class="btn btn-primary"
+            disabled="@(!_operations.Any() || _isDownloading)"
+            @onclick="Download">
+        Scarica
+    </button>
+
+    @if (_cts is not null && !_cts.IsCancellationRequested)
+    {
+        <button class="btn btn-danger"
+                type="button"
+                role="button"
+                @onclick="Abort">
+            Annulla
+        </button>
+    }
+
+</div>

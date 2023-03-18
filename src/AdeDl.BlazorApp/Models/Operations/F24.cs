@@ -1,4 +1,4 @@
-﻿namespace AdeDl.BlazorApp.Models;
+﻿namespace AdeDl.BlazorApp.Models.Operations;
 
 public class F24 : BaseOperation
 {

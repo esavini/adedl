@@ -1,4 +1,4 @@
-﻿namespace AdeDl.App.Services
+﻿namespace AdeDl.BlazorApp.Services
 {
     public class FileDownloaderService
     {

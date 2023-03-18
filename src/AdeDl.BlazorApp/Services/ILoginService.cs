@@ -1,8 +1,6 @@
-﻿using AdeDl.BlazorApp.Models.Database;
-using PuppeteerSharp;
-using IBrowser = PuppeteerSharp.IBrowser;
+﻿using PuppeteerSharp;
 
-namespace AdeDl.App.Services
+namespace AdeDl.BlazorApp.Services
 {
     public interface ILoginService
     {

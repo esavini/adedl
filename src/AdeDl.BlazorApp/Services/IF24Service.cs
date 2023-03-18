@@ -1,10 +1,10 @@
 ﻿using AdeDl.BlazorApp.Models.Database;
-using PuppeteerSharp;
+using AdeDl.BlazorApp.Models.Operations;
 
-namespace AdeDl.App.Services
+namespace AdeDl.BlazorApp.Services
 {
     public interface IF24Service
     {
-        Task DownloadF24Async(Customer fiscalCode, IEnumerable<CookieParam> cookies);
+        Task DownloadF24Async(Customer customer, F24 request, CancellationToken cancellationToken);
     }
 }

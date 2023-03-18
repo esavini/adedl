@@ -1,8 +1,6 @@
-﻿using AdeDl.BlazorApp.Models.Database;
-using AdeDl.BlazorApp.Services;
-using PuppeteerSharp;
+﻿using PuppeteerSharp;
 
-namespace AdeDl.App.Services
+namespace AdeDl.BlazorApp.Services
 {
     public class LoginService : ILoginService
     {

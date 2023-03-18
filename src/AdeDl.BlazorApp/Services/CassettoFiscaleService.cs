@@ -1,5 +1,4 @@
-﻿using AdeDl.App.Services;
-using AdeDl.BlazorApp.Models.Database;
+﻿using AdeDl.BlazorApp.Models.Database;
 
 namespace AdeDl.BlazorApp.Services;
 
@@ -17,12 +16,9 @@ public class CassettoFiscaleService : ICassettoFiscaleService
     }
 
 
-    public async Task OpenCassettoAsync()
-    {
-        await _loginService.LoginAsync();
-    }
+    public async Task OpenCassettoAsync() => await _loginService.LoginAsync();
 
-    public async Task OpenCassettoAsync(Customer customer)
+    public async Task<IBrowserService> OpenRawCassettoAsync(Customer customer, bool visible)
     {
         var credential = await _credentialService.GetCurrentCredentialAsync();
 
@@ -36,12 +32,14 @@ public class CassettoFiscaleService : ICassettoFiscaleService
             $@"document.getElementById(""cfCliente"").value=""{customer.FiscalCode}""");
         await page.ActAsync($@"document.getElementById(""pinC"").value = ""{credential.DelegationPassword}""");
         await page.ActAsync(@"document.querySelectorAll(""input.txt_B_R"")[0].click()");
+        
+        return page;
     }
+    
+    public async Task OpenCassettoAsync(Customer customer) => await OpenRawCassettoAsync(customer, true);
 
     public async Task OpenFatturazioneElettronicaAsync(Customer customer)
     {
-        var credential = await _credentialService.GetCurrentCredentialAsync();
-
         var page = await _loginService.LoginAsync();
 
         await page.GoToAsync(
@@ -66,16 +64,5 @@ public class CassettoFiscaleService : ICassettoFiscaleService
 
         await Task.Delay(1000);
         await page.ActAsync($@"document.getElementById(""chiudi_informativa"").click()");
-
-        /* 
-         await page.ActAsync($@"document.getElementById(""username"").value=""{credential.Username}""");
-         await page.ActAsync($@"document.getElementById(""password"").value=""{credential.Password}""");
-         await page.ActAsync($@"document.getElementById(""pin"").value=""{credential.Pin}""");
-         await page.ActAsync(@"document.getElementById(""login-button"").click()");
-         
-         await Task.Delay(2500);
-         */
-
-
     }
 }

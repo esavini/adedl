@@ -8,5 +8,7 @@ public interface ICassettoFiscaleService
     
     public Task OpenCassettoAsync(Customer customer);
     
+    public Task<IBrowserService> OpenRawCassettoAsync(Customer customer, bool visible);
+    
     public Task OpenFatturazioneElettronicaAsync(Customer customer);
 }

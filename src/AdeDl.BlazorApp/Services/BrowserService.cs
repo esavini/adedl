@@ -1,7 +1,8 @@
-﻿using PuppeteerSharp;
+﻿using System.Text.Json.Serialization;
+using PuppeteerSharp;
 using IBrowser = PuppeteerSharp.IBrowser;
 
-namespace AdeDl.App.Services
+namespace AdeDl.BlazorApp.Services
 {
     public class BrowserService : IBrowserService
     {
@@ -42,7 +43,24 @@ namespace AdeDl.App.Services
             var pages = await _browser.PagesAsync();
         }
 
-        public IEnumerable<CookieParam> GetCookies() => _cookies.ToArray();
+        public async Task<IEnumerable<CookieParam>> GetCookiesAsync()
+        {
+        var pages = await _browser.PagesAsync();
+            var firstPage = pages.FirstOrDefault() ?? await _browser.NewPageAsync();
+            
+           var a =await  firstPage.Client.SendAsync<CookiesContainer>("Network.getAllCookies");
+
+           return a.Cookies.Select(x => new CookieParam
+            {
+                Name = x.Name,
+                Value = x.Value,
+                Domain = x.Domain,
+                Path = x.Path,
+                Expires = x.Expires,
+                HttpOnly = x.HttpOnly,
+                Secure = x.Secure,
+            });
+        }
 
         public async Task GoToAsync(string url, IEnumerable<CookieParam>? cookies = null)
         {
@@ -84,6 +102,54 @@ namespace AdeDl.App.Services
         {
             var firstPage = (await _browser.PagesAsync()).First();
             return firstPage.MainFrame.Url;
+        }
+    }
+
+    public class CookiesContainer
+    {
+        [JsonPropertyName("cookies")]
+        public IEnumerable<Cookie> Cookies { get; set; }
+
+        public class Cookie
+        {
+            [JsonPropertyName("name")]
+            public string Name { get; set; }
+            
+            [JsonPropertyName("value")]
+            public string Value { get; set; }
+            
+            [JsonPropertyName("domain")]
+            public string Domain { get; set; }
+            
+            [JsonPropertyName("path")]
+            public string Path { get; set; }
+            
+            [JsonPropertyName("expires")]
+            public int Expires { get; set; }
+            
+            [JsonPropertyName("size")]
+            public int Size { get; set; }
+            
+            [JsonPropertyName("httpOnly")]
+            public bool HttpOnly { get; set; }
+            
+            [JsonPropertyName("secure")]
+            public bool Secure { get; set; }
+            
+            [JsonPropertyName("session")]
+            public bool Session { get; set; }
+            
+            [JsonPropertyName("priority")]
+            public string Priority { get; set; }
+            
+            [JsonPropertyName("sameParty")]
+            public bool SameParty { get; set; }
+            
+            [JsonPropertyName("sourceScheme")]
+            public string SourceScheme { get; set; }
+            
+            [JsonPropertyName("sourcePort")]
+            public int SourcePort { get; set; }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Text;
-using AdeDl.App.Services;
 using AdeDl.BlazorApp.Services;
+using AdeDl.BlazorApp.Strategies.DownloadSrategy;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -69,6 +69,10 @@ public static class MauiProgram
             builder.Services.AddTransient<ICustomerService, CustomerService>();
             builder.Services.AddTransient<IBrowserService, BrowserService>();
             builder.Services.AddTransient<ICassettoFiscaleService, CassettoFiscaleService>();
+            builder.Services.AddTransient<IF24Service, F24Service>();
+
+            builder.Services.AddTransient<IDownloadContext, DownloadContext>();
+            builder.Services.AddTransient<IDownloadStrategy, F24DownloadStrategy>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
