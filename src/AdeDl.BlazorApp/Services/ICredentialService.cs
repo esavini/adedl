@@ -1,5 +1,4 @@
-﻿using AdeDl.BlazorApp.Models.Requests;
-using AdeDl.BlazorApp.Models.Responses;
+﻿using AdeDl.BlazorApp.Models.Database;
 
 namespace AdeDl.BlazorApp.Services;
 
@@ -7,11 +6,13 @@ public interface ICredentialService
 {
     Task ChangeSelectedCredentialAsync(string credentialId);
 
-    Task CreateCredentialAsync(CredentialCreateModel credential);
+    Task SaveAsync(Credential credential);
 
-    Task DeleteCredentialAsync(string credentialId);
+    Task DeleteCredentialAsync(Credential credential);
 
-    Task ChangePasswordAsync(CredentialEditModel credential);
-
-    Task<IEnumerable<CredentialListResponse>> ListCredentialsAsync();
+    Task<IEnumerable<Credential>> ListCredentialsAsync();
+    
+    string? SelectedCredentialId { get; }
+    
+    Task<Credential> GetCurrentCredentialAsync();
 }

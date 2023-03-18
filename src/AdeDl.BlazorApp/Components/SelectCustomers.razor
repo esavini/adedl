@@ -1,0 +1,49 @@
+﻿@using AdeDl.BlazorApp.Models.Cascade
+
+<button class="btn btn-primary mb-3"
+        @onclick="Accedi">
+    Accedi all'Agenzia delle Entrate
+</button>
+
+<CascadingValue Name="@nameof(AddCustomerCascadeModel)"
+                Value="_addCustomerCascadeModel">
+    
+    <AddCustomerForm/>
+    
+<div class="mb-3">
+  <label for="exampleFormControlInput1" class="form-label">Email address</label>
+  <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+</div> 
+    
+    <table class="table mt-4">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Nome</th>
+            <th scope="col">Codice fiscale</th>
+            <th scope="col">Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+    
+        <Virtualize Items="_customers">
+    
+            <SelectCustomerRow @key="@(context.Id)"
+                               Customer="context"/>
+    
+        </Virtualize>
+    
+        </tbody>
+    </table>
+    
+</CascadingValue>
+
+@if (_addCustomerCascadeModel.Customers.Any())
+{
+    <button role="button"
+       class="btn btn-lg btn-primary"
+       @onclick="Next">
+        Avanti
+    </button>
+}
+

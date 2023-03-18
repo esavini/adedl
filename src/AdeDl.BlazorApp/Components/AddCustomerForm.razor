@@ -1,0 +1,54 @@
+﻿<EditForm class="row"
+          Model="_customer"
+          OnValidSubmit="Submit">
+
+    <DataAnnotationsValidator/>
+
+    <div class="col-md">
+        <div class="form-floating">
+            <InputText type="text"
+                       class="form-control"
+                       id="nomeCliente"
+                       autocomplete="no"
+                       @bind-Value="_customer.Name"
+                       placeholder="Nome"/>
+            <label for="nomeCliente">Nome</label>
+        </div>
+        <div class="text-danger">
+            <ValidationMessage For="@(() => _customer.Name)"/>
+        </div>
+    </div>
+
+    <div class="col-md">
+        <div class="form-floating">
+            <InputText type="text"
+                       class="form-control"
+                       id="fiscalCode"
+                       autocomplete="no"
+                       @bind-Value="_customer.FiscalCode"
+                       placeholder="Codice fiscale"/>
+            <label for="fiscalCode">Codice fiscale</label>
+        </div>
+        <div class="text-danger">
+            <ValidationMessage For="@(() => _customer.FiscalCode)"/>
+        </div>
+    </div>
+
+    <div class="col-md">
+        <button class="btn btn-primary"
+                type="submit"
+                disabled="@IsLoading">
+
+            @if (IsLoading)
+            {
+                <Loading/>
+            }
+            else
+            {
+                @("Aggiungi")
+            }
+
+        </button>
+    </div>
+
+</EditForm>

@@ -2,6 +2,7 @@
 using AdeDl.BlazorApp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdeDl.BlazorApp.Migrations
 {
     [DbContext(typeof(AdeDlDbContext))]
-    partial class AdeDlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230314141110_AddPin")]
+    partial class AddPin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.3");

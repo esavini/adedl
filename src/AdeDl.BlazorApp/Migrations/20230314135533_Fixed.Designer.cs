@@ -2,6 +2,7 @@
 using AdeDl.BlazorApp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdeDl.BlazorApp.Migrations
 {
     [DbContext(typeof(AdeDlDbContext))]
-    partial class AdeDlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230314135533_Fixed")]
+    partial class Fixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.3");
@@ -31,10 +34,6 @@ namespace AdeDl.BlazorApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Pin")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -77,7 +76,7 @@ namespace AdeDl.BlazorApp.Migrations
                     b.HasOne("AdeDl.BlazorApp.Models.Database.Credential", "Credential")
                         .WithMany("Customers")
                         .HasForeignKey("CredentialId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Credential");

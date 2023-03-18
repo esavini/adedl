@@ -1,5 +1,7 @@
 ﻿using System.Text;
+using AdeDl.App.Services;
 using AdeDl.BlazorApp.Services;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -45,11 +47,28 @@ public static class MauiProgram
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
-            builder.Services.AddDbContext<AdeDlDbContext>(b => b.UseSqlite($"DataSource={databasePath}"));
+            builder.Services.AddDbContext<AdeDlDbContext>(b =>
+            {
+                var sqliteConnectionStringBuilder = new SqliteConnectionStringBuilder();
+                sqliteConnectionStringBuilder.DataSource = databasePath;
+                sqliteConnectionStringBuilder.ForeignKeys = true;
+                
+                var connectionString = sqliteConnectionStringBuilder.ToString();
+                
+                b.UseSqlite(connectionString);
+                b.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
+            });
 
             builder.Services.AddMauiBlazorWebView();
 
-            builder.Services.AddScoped<ICredentialService, CredentialService>();
+            builder.Services.AddSingleton<ICredentialService, CredentialService>();
+            builder.Services.AddSingleton<ILoginService, LoginService>();
+            builder.Services.AddSingleton<IStateKeeper, StateKeeper>();
+
+
+            builder.Services.AddTransient<ICustomerService, CustomerService>();
+            builder.Services.AddTransient<IBrowserService, BrowserService>();
+            builder.Services.AddTransient<ICassettoFiscaleService, CassettoFiscaleService>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

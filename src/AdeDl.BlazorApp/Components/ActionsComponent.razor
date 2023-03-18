@@ -1,0 +1,50 @@
+﻿@using AdeDl.BlazorApp.Models
+<p>
+    @if (_selectedCustomersCount == 1)
+    {
+        @("Un cliente selezionato.")
+    }
+    else
+    {
+        @($"{_selectedCustomersCount} clienti selezionati.")
+    }
+</p>
+
+<div class="form-check">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(Anagrafica))"
+           id="anagrafica">
+    <label class="form-check-label" for="anagrafica">
+        Anagrafica
+    </label>
+</div>
+
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(F24))"
+           id="f24">
+    <label class="form-check-label"
+           for="f24">
+        F24
+    </label>
+</div>
+
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(Cu))"
+           id="cu">
+    <label class="form-check-label"
+           for="cu">
+        CU
+    </label>
+</div>
+
+<button type="button"
+        role="button"
+        class="btn btn-lg btn-primary mt-3"
+        disabled>
+    Scarica
+</button>

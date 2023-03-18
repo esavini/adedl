@@ -1,6 +1,4 @@
 ﻿using AdeDl.BlazorApp.Models.Database;
-using AdeDl.BlazorApp.Models.Requests;
-using AdeDl.BlazorApp.Models.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdeDl.BlazorApp.Services;
@@ -9,59 +7,53 @@ public class CredentialService : ICredentialService
 {
     private readonly AdeDlDbContext _adeDlDbContext;
 
-    private string? _selectedCredential = null;
+    private string? _selectedCredential;
 
     public CredentialService(AdeDlDbContext adeDlDbContext)
     {
         _adeDlDbContext = adeDlDbContext;
     }
-    
+
     public Task ChangeSelectedCredentialAsync(string credentialId)
     {
-        throw new NotImplementedException();
+        _selectedCredential = credentialId;
+        return Task.CompletedTask;
     }
 
-    public async Task CreateCredentialAsync(CredentialCreateModel credential)
+    public async Task SaveAsync(Credential credential)
     {
-        var newCredential = new Credential
+        if (credential.Id is null)
         {
-            Username = credential.Username,
-            Password = credential.Password,
-            Name = credential.Name,
-            DelegationPassword = credential.DelegationPassword,
-        };
+            await _adeDlDbContext.Credentials.AddAsync(credential);
+        }
+        else
+        {
+            _adeDlDbContext.Credentials.Update(credential);
+        }
 
-        await _adeDlDbContext.Credentials.AddAsync(newCredential);
         await _adeDlDbContext.SaveChangesAsync();
     }
 
-    public Task DeleteCredentialAsync(string credentialId)
+    public async Task DeleteCredentialAsync(Credential credential)
     {
-        throw new NotImplementedException();
+        var c = await _adeDlDbContext.Credentials.FindAsync(credential.Id);
+
+        if (c is null) return;
+
+        _adeDlDbContext.Credentials.Remove(c);
+        await _adeDlDbContext.SaveChangesAsync();
     }
 
-    public Task ChangePasswordAsync(CredentialEditModel credential)
+    public async Task<IEnumerable<Credential>> ListCredentialsAsync()
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<CredentialListResponse>> ListCredentialsAsync()
-    {
-        var credentials = await _adeDlDbContext.Credentials.Select(c => new CredentialListResponse
-        {
-            IsCurrentlySelected = _selectedCredential == c.Id,
-            Name = c.Name,
-            Id = c.Id
-        })
+        var credentials = await _adeDlDbContext.Credentials
             .ToListAsync();
-
-        if (_selectedCredential is null && credentials.Any())
-        {
-            var selectedCredential = credentials.First();
-            _selectedCredential = selectedCredential.Id;
-            selectedCredential.IsCurrentlySelected = true;
-        }
 
         return credentials;
     }
+
+    public string? SelectedCredentialId => _selectedCredential;
+
+    public async Task<Credential> GetCurrentCredentialAsync() =>
+        await _adeDlDbContext.Credentials.FindAsync(_selectedCredential) ?? throw new Exception();
 }

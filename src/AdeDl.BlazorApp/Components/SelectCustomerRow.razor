@@ -1,0 +1,28 @@
+﻿<tr class="@(IsSelected() ? "table-warning" : string.Empty)">
+    <td>
+        <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   value="@IsSelected()"
+                   @onchange="SelectionChanged"/>
+        </div>
+    </td>
+    <td>
+        @Customer.Name
+    </td>
+    <td>
+        @Customer.FiscalCode
+    </td>
+    <td>
+        <button role="button"
+                class="btn btn-sm btn-secondary"
+                @onclick="OpenCassetto">
+            Apri cassetto fiscale
+        </button>
+        <button role="button"
+                class="btn btn-sm btn-secondary ms-2"
+                @onclick="OpenFatture">
+            Apri fatturazione
+        </button>
+    </td>
+</tr>
