@@ -2,7 +2,7 @@
 using AdeDl.BlazorApp.Models.Operations;
 using Microsoft.Extensions.Logging;
 
-namespace AdeDl.BlazorApp.Strategies.DownloadSrategy;
+namespace AdeDl.BlazorApp.Strategies.DownloadStrategy;
 
 public class DownloadContext : IDownloadContext
 {

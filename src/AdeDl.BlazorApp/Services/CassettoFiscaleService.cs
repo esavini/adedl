@@ -16,13 +16,13 @@ public class CassettoFiscaleService : ICassettoFiscaleService
     }
 
 
-    public async Task OpenCassettoAsync() => await _loginService.LoginAsync();
+    public async Task OpenCassettoAsync() => await _loginService.LoginAsync(true);
 
     public async Task<IBrowserService> OpenRawCassettoAsync(Customer customer, bool visible)
     {
         var credential = await _credentialService.GetCurrentCredentialAsync();
 
-        var page = await _loginService.LoginAsync();
+        var page = await _loginService.LoginAsync(visible);
 
         await page.GoToAsync(
             "https://telematici.agenziaentrate.gov.it/CassettoFiscale/Cassetto/AccessoCassettoClientiServlet");
@@ -40,7 +40,7 @@ public class CassettoFiscaleService : ICassettoFiscaleService
 
     public async Task OpenFatturazioneElettronicaAsync(Customer customer)
     {
-        var page = await _loginService.LoginAsync();
+        var page = await _loginService.LoginAsync(true);
 
         await page.GoToAsync(
             "https://portale.agenziaentrate.gov.it/PortaleWeb/servizi/accessoFatturazione");

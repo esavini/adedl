@@ -14,11 +14,11 @@ namespace AdeDl.BlazorApp.Services
             _credentialService = credentialService;
         }
 
-        public async Task<IBrowserService> LoginAsync()
+        public async Task<IBrowserService> LoginAsync(bool visible)
         {
             var credential = await _credentialService.GetCurrentCredentialAsync();
 
-            await _browserService.CreateClientAsync(true);
+            await _browserService.CreateClientAsync(visible);
             await _browserService.GoToAsync("https://iampe.agenziaentrate.gov.it/sam/UI/Login?realm=/agenziaentrate");
             await _browserService.ActAsync(@"document.getElementById(""tab-form"").click()");
             await _browserService.ActAsync(

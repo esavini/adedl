@@ -2,7 +2,7 @@
 using AdeDl.BlazorApp.Models.Operations;
 using AdeDl.BlazorApp.Services;
 
-namespace AdeDl.BlazorApp.Strategies.DownloadSrategy;
+namespace AdeDl.BlazorApp.Strategies.DownloadStrategy;
 
 public class F24DownloadStrategy : IDownloadStrategy
 {

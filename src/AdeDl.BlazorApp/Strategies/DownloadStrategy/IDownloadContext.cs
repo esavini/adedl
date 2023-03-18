@@ -1,7 +1,7 @@
 ﻿using AdeDl.BlazorApp.Models.Database;
 using AdeDl.BlazorApp.Models.Operations;
 
-namespace AdeDl.BlazorApp.Strategies.DownloadSrategy;
+namespace AdeDl.BlazorApp.Strategies.DownloadStrategy;
 
 public interface IDownloadContext
 {

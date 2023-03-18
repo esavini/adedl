@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AdeDl.BlazorApp.Models.Database;
+﻿using AdeDl.BlazorApp.Models.Database;
 using AdeDl.BlazorApp.Models.Operations;
 using Microsoft.Extensions.Logging;
 
@@ -10,14 +9,17 @@ public class F24Service : IF24Service
     private readonly ICassettoFiscaleService _cassettoFiscaleService;
 
     private readonly ICredentialService _credentialService;
+    
+    private readonly IFileDownloaderService _fileDownloaderService;
 
     private readonly ILogger<F24Service> _logger;
 
     public F24Service(ICassettoFiscaleService cassettoFiscaleService, ICredentialService credentialService,
-        ILogger<F24Service> logger)
+        IFileDownloaderService fileDownloaderService, ILogger<F24Service> logger)
     {
         _cassettoFiscaleService = cassettoFiscaleService;
         _credentialService = credentialService;
+        _fileDownloaderService = fileDownloaderService;
         _logger = logger;
     }
 
@@ -42,6 +44,12 @@ public class F24Service : IF24Service
         {
             _logger.LogInformation("F24 annualità {@Anno} non disponibile per il cliente {@Customer}", request.Year,
                 customer);
+            return;
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            await browserService.Close();
             return;
         }
 
@@ -71,6 +79,12 @@ public class F24Service : IF24Service
             var splittedDate = dateOfF24s[i].Split("/");
             var data = splittedDate[2] + "." + splittedDate[1].PadLeft(2, '0') + "." +
                        splittedDate[0].PadLeft(2, '0');
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                await browserService.Close();
+                return;
+            }
 
             await DownloadF24(f24Path, customer.FiscalCode, request.Year, data, f24s[i],
                 numberOfF24s[i], protoOfF24s[i], browserService);
@@ -103,15 +117,15 @@ public class F24Service : IF24Service
 
             if (!File.Exists(finalPath))
             {
-                await DownloadFile(url + "&stampa=P", finalPath, browserService);
+                await _fileDownloaderService.DownloadFileAsync(url + "&stampa=P", finalPath, browserService);
             }
 
             if (!File.Exists(finalPathQuietanza))
             {
-                await DownloadFile(url + "&stampa=Q", finalPathQuietanza, browserService);
+                await _fileDownloaderService.DownloadFileAsync(url + "&stampa=Q", finalPathQuietanza, browserService);
             }
 
-            Task.Delay(2000);
+            await Task.Delay(2000);
         }
         else
         {
@@ -137,29 +151,16 @@ public class F24Service : IF24Service
 
                 if (!File.Exists(finalPath))
                 {
-                    await DownloadFile(url + "&stampa=P", finalPath, browserService);
+                    await _fileDownloaderService.DownloadFileAsync(url + "&stampa=P", finalPath, browserService);
                 }
 
                 if (!File.Exists(finalPathQuietanza))
                 {
-                    await DownloadFile(url + "&stampa=Q", finalPathQuietanza, browserService);
+                    await _fileDownloaderService.DownloadFileAsync(url + "&stampa=Q", finalPathQuietanza, browserService);
                 }
 
-                Task.Delay(2000);
+                await Task.Delay(2000);
             }
         }
-    }
-
-    private async Task DownloadFile(string url, string path, IBrowserService browserService)
-    {
-        var newCookies = await browserService.GetCookiesAsync();
-        var webClient = new WebClient();
-        webClient.Headers.Add(HttpRequestHeader.Cookie,
-            string.Join("; ", newCookies.Select(c => c.Name + "=" + c.Value)));
-        webClient.Headers.Add(HttpRequestHeader.Accept, "*/*");
-        webClient.Headers.Add(HttpRequestHeader.UserAgent,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36");
-
-        webClient.DownloadFile(new Uri(url), path);
     }
 }

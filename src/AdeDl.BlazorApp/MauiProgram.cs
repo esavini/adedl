@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using AdeDl.BlazorApp.Services;
-using AdeDl.BlazorApp.Strategies.DownloadSrategy;
+using AdeDl.BlazorApp.Strategies.DownloadStrategy;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -70,9 +70,14 @@ public static class MauiProgram
             builder.Services.AddTransient<IBrowserService, BrowserService>();
             builder.Services.AddTransient<ICassettoFiscaleService, CassettoFiscaleService>();
             builder.Services.AddTransient<IF24Service, F24Service>();
+            builder.Services.AddTransient<ICuService, CuService>();
+            builder.Services.AddTransient<IAnagraficaService, AnagraficaService>();
+            builder.Services.AddTransient<IFileDownloaderService, FileDownloaderService>();
 
             builder.Services.AddTransient<IDownloadContext, DownloadContext>();
             builder.Services.AddTransient<IDownloadStrategy, F24DownloadStrategy>();
+            builder.Services.AddTransient<IDownloadStrategy, CuDownloadStrategy>();
+            builder.Services.AddTransient<IDownloadStrategy, AnagraficaStrategy>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
@@ -88,7 +93,7 @@ public static class MauiProgram
         }
         catch (Exception exception)
         {
-            Log.Fatal("Thrown exception {@Exception} in the app, closing...", exception);
+            Log.Fatal(exception, "Thrown exception in the app, closing...");
             Log.CloseAndFlush();
             
             throw;

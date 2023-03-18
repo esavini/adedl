@@ -1,7 +1,7 @@
 ﻿using AdeDl.BlazorApp.Models;
 using AdeDl.BlazorApp.Models.Operations;
 using AdeDl.BlazorApp.Services;
-using AdeDl.BlazorApp.Strategies.DownloadSrategy;
+using AdeDl.BlazorApp.Strategies.DownloadStrategy;
 using Microsoft.AspNetCore.Components;
 
 namespace AdeDl.BlazorApp.Components;
@@ -97,7 +97,7 @@ public partial class ActionsComponent
 
     private CancellationTokenSource? _cts;
     
-    private void Download()
+    private async void Download()
     {
         _isDownloading = true;
         _cts = new CancellationTokenSource();
@@ -109,7 +109,7 @@ public partial class ActionsComponent
 
             if (_cts.IsCancellationRequested) continue;
 
-            DownloadContext.DownloadAsync(customer, _operations, _cts.Token);
+            await DownloadContext.DownloadAsync(customer, _operations, _cts.Token);
         }
     }
     

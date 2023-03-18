@@ -1,7 +1,6 @@
-﻿namespace AdeDl.BlazorApp.Services
+﻿namespace AdeDl.BlazorApp.Services;
+
+public interface IFileDownloaderService
 {
-    public class IFileDownloaderService
-    {
-        
-    }
+    Task DownloadFileAsync(string url, string path, IBrowserService browserService);
 }
