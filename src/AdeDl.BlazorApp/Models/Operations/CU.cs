@@ -1,6 +1,6 @@
 ﻿namespace AdeDl.BlazorApp.Models.Operations;
 
-public class Cu : BaseOperation
+public class Cu : IYearlyOperation
 {
     public int Year { get; set; }
 }

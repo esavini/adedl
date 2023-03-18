@@ -5,7 +5,7 @@ namespace AdeDl.BlazorApp.Strategies.DownloadStrategy;
 
 public interface IDownloadStrategy
 {
-    bool CanHandle(BaseOperation operation);
+    bool CanHandle(IOperation operation);
     
-    Task DownloadAsync(Customer customer, BaseOperation operation, CancellationToken cancellationToken);
+    Task DownloadAsync(Customer customer, IOperation operation, CancellationToken cancellationToken);
 }

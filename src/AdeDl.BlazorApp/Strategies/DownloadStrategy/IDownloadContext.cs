@@ -5,5 +5,5 @@ namespace AdeDl.BlazorApp.Strategies.DownloadStrategy;
 
 public interface IDownloadContext
 {
-    Task DownloadAsync(Customer customer, IEnumerable<BaseOperation> operations, CancellationToken cancellationToken);
+    Task DownloadAsync(Customer customer, IEnumerable<IOperation> operations, CancellationToken cancellationToken);
 }

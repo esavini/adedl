@@ -13,9 +13,9 @@ public class AnagraficaStrategy : IDownloadStrategy
         _anagraficaService = anagraficaService;
     }
     
-    public bool CanHandle(BaseOperation operation) => operation is Anagrafica;
+    public bool CanHandle(IOperation operation) => operation is Anagrafica;
 
-    public async Task DownloadAsync(Customer customer, BaseOperation operation, CancellationToken cancellationToken)
+    public async Task DownloadAsync(Customer customer, IOperation operation, CancellationToken cancellationToken)
     {
         await _anagraficaService.DownloadAnagraficaAsync(customer, (Anagrafica)operation, cancellationToken);
     }

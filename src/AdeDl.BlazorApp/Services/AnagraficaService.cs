@@ -27,7 +27,7 @@ public class AnagraficaService : IAnagraficaService
         CancellationToken cancellationToken)
     {
         var currentCredential = await _credentialService.GetCurrentCredentialAsync();
-        var browserService = await _cassettoFiscaleService.OpenRawCassettoAsync(customer, true);
+        var browserService = await _cassettoFiscaleService.OpenRawCassettoAsync(customer, false);
 
         var filesToDownload = new[]
         {

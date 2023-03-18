@@ -9,12 +9,12 @@ namespace AdeDl.BlazorApp.Components;
 public partial class ActionsComponent
 {
     [Inject] private IStateKeeper StateKeeper { get; set; } = default!;
-    
+
     [Inject] private IDownloadContext DownloadContext { get; set; } = default!;
 
     private int _selectedCustomersCount = 0;
 
-    private List<BaseOperation> _operations = new();
+    private List<IOperation> _operations = new();
 
     private bool _isDownloading;
 
@@ -25,42 +25,14 @@ public partial class ActionsComponent
 
     private bool IsOperationSelected(Type operationType) => _operations.Any(o => o.GetType() == operationType);
 
-    private void ToggleF24()
-    {
-        if (IsOperationSelected(typeof(F24)))
-        {
-            _operations.Remove(_operations.First(o => o.GetType() == typeof(F24)));
-        }
-        else
-        {
-            _operations.Add(new F24
-            {
-                Year = DateTime.Now.Year
-            });
-        }
+    private bool IsYearlySelected<T>(int y) where T : IYearlyOperation =>
+        IsOperationSelected(typeof(T)) &&
+        _operations.Any(o => o.GetType() == typeof(T) && ((T)o).Year == y);
 
-        StateHasChanged();
-    }
-
-    private bool IsCuSelected(int y) =>
-        IsOperationSelected(typeof(Cu)) &&
-        _operations.Any(o => o.GetType() == typeof(Cu) && ((Cu)o).Year == y);
-    
-    private bool IsF24Selected(int y) =>
-        IsOperationSelected(typeof(F24)) &&
-        _operations.Any(o => o.GetType() == typeof(F24) && ((F24)o).Year == y);
-    
-    private void ChangeCuYear(ChangeEventArgs e)
+    private void ChangeYear<T>(ChangeEventArgs e) where T : IYearlyOperation
     {
-        var cu = _operations.First(o => o.GetType() == typeof(Cu)) as Cu;
-        cu!.Year = int.Parse(e.Value!.ToString() ?? DateTime.Now.Year.ToString());
-        StateHasChanged();
-    }
-    
-    private void ChangeF24Year(ChangeEventArgs e)
-    {
-        var f24 = _operations.First(o => o.GetType() == typeof(F24)) as F24;
-        f24!.Year = int.Parse(e.Value!.ToString() ?? DateTime.Now.Year.ToString());
+        var op = _operations.First(o => o.GetType() == typeof(T)) as IYearlyOperation;
+        op!.Year = int.Parse(e.Value!.ToString() ?? DateTime.Now.Year.ToString());
         StateHasChanged();
     }
 
@@ -74,19 +46,19 @@ public partial class ActionsComponent
         {
             _operations.Add(new Anagrafica());
         }
-        
+
         StateHasChanged();
     }
-    
-    private void ToggleCu()
+
+    private void ToggleYearlyOperation<T>() where T : IYearlyOperation, new()
     {
-        if (IsOperationSelected(typeof(Cu)))
+        if (IsOperationSelected(typeof(T)))
         {
-            _operations.Remove(_operations.First(o => o.GetType() == typeof(Cu)));
+            _operations.Remove(_operations.First(o => o.GetType() == typeof(T)));
         }
         else
         {
-            _operations.Add(new Cu
+            _operations.Add(new T
             {
                 Year = DateTime.Now.Year
             });
@@ -96,23 +68,22 @@ public partial class ActionsComponent
     }
 
     private CancellationTokenSource? _cts;
-    
+
     private async void Download()
     {
         _isDownloading = true;
         _cts = new CancellationTokenSource();
-        
+
         StateHasChanged();
 
         foreach (var customer in StateKeeper.SelectedCustomers)
         {
-
             if (_cts.IsCancellationRequested) continue;
 
             await DownloadContext.DownloadAsync(customer, _operations, _cts.Token);
         }
     }
-    
+
     private void Abort()
     {
         _cts?.Cancel();

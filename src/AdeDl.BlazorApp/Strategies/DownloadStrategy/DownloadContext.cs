@@ -16,7 +16,7 @@ public class DownloadContext : IDownloadContext
         _logger = logger;
     }
 
-    public async Task DownloadAsync(Customer customer, IEnumerable<BaseOperation> operations,
+    public async Task DownloadAsync(Customer customer, IEnumerable<IOperation> operations,
         CancellationToken cancellationToken)
     {
         foreach (var operation in operations)

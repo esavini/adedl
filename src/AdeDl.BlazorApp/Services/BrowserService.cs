@@ -36,7 +36,7 @@ namespace AdeDl.BlazorApp.Services
             {
                 launchOptions.IgnoredDefaultArgs = new[]
                     { "--enable-automation", "--enable-blink-features=IdleDetection" };
-                launchOptions.Args = new[] { "--start-maximized", "--app=https://www.agenziaentrate.gov.it" };
+                launchOptions.Args = new[] { "--start-maximized"/*, "--app=https://www.agenziaentrate.gov.it" */};
             }
 
             _browser = await Puppeteer.LaunchAsync(launchOptions);

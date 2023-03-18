@@ -13,9 +13,9 @@ public class F24DownloadStrategy : IDownloadStrategy
         _f24Service = f24Service;
     }
     
-    public bool CanHandle(BaseOperation operation) => operation is F24;
+    public bool CanHandle(IOperation operation) => operation is F24;
 
-    public async Task DownloadAsync(Customer customer, BaseOperation operation, CancellationToken cancellationToken)
+    public async Task DownloadAsync(Customer customer, IOperation operation, CancellationToken cancellationToken)
     {
         await _f24Service.DownloadF24Async(customer, (F24)operation, cancellationToken);
     }

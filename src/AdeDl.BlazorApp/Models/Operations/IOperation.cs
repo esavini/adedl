@@ -1,6 +1,6 @@
 ﻿namespace AdeDl.BlazorApp.Models.Operations;
 
-public abstract class BaseOperation
+public interface IOperation
 {
     
 }

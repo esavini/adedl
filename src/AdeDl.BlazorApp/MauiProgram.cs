@@ -72,12 +72,14 @@ public static class MauiProgram
             builder.Services.AddTransient<IF24Service, F24Service>();
             builder.Services.AddTransient<ICuService, CuService>();
             builder.Services.AddTransient<IAnagraficaService, AnagraficaService>();
+            builder.Services.AddTransient<ICreditoIvaService, CreditoIvaService>();
             builder.Services.AddTransient<IFileDownloaderService, FileDownloaderService>();
 
             builder.Services.AddTransient<IDownloadContext, DownloadContext>();
             builder.Services.AddTransient<IDownloadStrategy, F24DownloadStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, CuDownloadStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, AnagraficaStrategy>();
+            builder.Services.AddTransient<IDownloadStrategy, CreditoIvaStrategy>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

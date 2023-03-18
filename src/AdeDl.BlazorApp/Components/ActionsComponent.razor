@@ -1,5 +1,6 @@
 ﻿@using AdeDl.BlazorApp.Models
 @using AdeDl.BlazorApp.Models.Operations
+@using AdeDl.BlazorApp.Services
 <p>
     @if (_selectedCustomersCount == 1)
     {
@@ -28,7 +29,7 @@
            type="checkbox"
            checked="@IsOperationSelected(typeof(F24))"
            id="f24"
-           @onchange="ToggleF24">
+           @onchange="@(ToggleYearlyOperation<F24>)">
     <label class="form-check-label"
            for="f24">
         F24
@@ -40,17 +41,17 @@
     <div class="mt-2">
         <div class="form-floating">
             <select class="form-select"
-                    id="floatingSelectGrid"
-                    @onchange="ChangeF24Year">
+                    id="f24select"
+                    @onchange="@(ChangeYear<F24>)">
                 @for (var i = DateTime.Now.Year; i >= 2015; i--)
                 {
                     <option value="@i"
-                            selected="@IsF24Selected(i)">
+                            selected="@(IsYearlySelected<F24>(i))">
                         @i
                     </option>
                 }
             </select>
-            <label for="floatingSelectGrid">
+            <label for="f24select">
                 Anno F24
             </label>
         </div>
@@ -62,7 +63,7 @@
            type="checkbox"
            checked="@IsOperationSelected(typeof(Cu))"
            id="cu"
-           @onchange="ToggleCu">
+           @onchange="@(ToggleYearlyOperation<Cu>)">
     <label class="form-check-label"
            for="cu">
         CU
@@ -74,18 +75,52 @@
     <div class="mt-2">
         <div class="form-floating">
             <select class="form-select"
-                    id="floatingSelectGrid"
-                    @onchange="ChangeCuYear">
+                    id="selectCu"
+                    @onchange="@(ChangeYear<Cu>)">
                 @for (var i = DateTime.Now.Year; i >= 2015; i--)
                 {
                     <option value="@i"
-                            selected="@IsCuSelected(i)">
+                            selected="@(IsYearlySelected<Cu>(i))">
                         @i redditi @(i - 1)
                     </option>
                 }
             </select>
-            <label for="floatingSelectGrid">
+            <label for="selectCu">
                 Anno CU
+            </label>
+        </div>
+    </div>
+}
+
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(CreditoIva))"
+           id="creditoIVA"
+           @onchange="@(ToggleYearlyOperation<CreditoIva>)">
+    <label class="form-check-label"
+           for="creditoIVA">
+        Credito IVA e Agevolazioni
+    </label>
+</div>
+
+@if (IsOperationSelected(typeof(CreditoIva)))
+{
+    <div class="mt-2">
+        <div class="form-floating">
+            <select class="form-select"
+                    id="creditoIvaSelect"
+                    @onchange="@(ChangeYear<CreditoIva>)">
+                @for (var i = DateTime.Now.Year; i >= 2015; i--)
+                {
+                    <option value="@i"
+                            selected="@(IsYearlySelected<CreditoIva>(i))">
+                        @i
+                    </option>
+                }
+            </select>
+            <label for="creditoIvaSelect">
+                Anno crediti IVA e agevolazioni
             </label>
         </div>
     </div>

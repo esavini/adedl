@@ -13,9 +13,9 @@ public class CuDownloadStrategy : IDownloadStrategy
         _cuService = cuService;
     }
     
-    public bool CanHandle(BaseOperation operation) => operation is Cu;
+    public bool CanHandle(IOperation operation) => operation is Cu;
 
-    public async Task DownloadAsync(Customer customer, BaseOperation operation, CancellationToken cancellationToken)
+    public async Task DownloadAsync(Customer customer, IOperation operation, CancellationToken cancellationToken)
     {
         await _cuService.DownloadCuAsync(customer, (Cu)operation, cancellationToken);
     }

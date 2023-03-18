@@ -1,6 +1,5 @@
 ﻿namespace AdeDl.BlazorApp.Models.Operations;
 
-public class Anagrafica : BaseOperation
+public class Anagrafica : IOperation
 {
-    
 }
