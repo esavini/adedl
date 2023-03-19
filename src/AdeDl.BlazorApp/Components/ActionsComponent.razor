@@ -160,6 +160,40 @@
     </div>
 }
 
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(VersamentiIva))"
+           id="versamentiIva"
+           @onchange="@(ToggleYearlyOperation<VersamentiIva>)">
+    <label class="form-check-label"
+           for="versamentiIva">
+        Versamenti IVA
+    </label>
+</div>
+
+@if (IsOperationSelected(typeof(VersamentiIva)))
+{
+    <div class="mt-2">
+        <div class="form-floating">
+            <select class="form-select"
+                    id="versamentiIvaSelect"
+                    @onchange="@(ChangeYear<VersamentiIva>)">
+                @for (var i = DateTime.Now.Year; i >= 2015; i--)
+                {
+                    <option value="@i"
+                            selected="@(IsYearlySelected<VersamentiIva>(i))">
+                        @i
+                    </option>
+                }
+            </select>
+            <label for="versamentiIvaSelect">
+                Anno versamenti IVA
+            </label>
+        </div>
+    </div>
+}
+
 <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
 
     <button type="button"
