@@ -65,7 +65,6 @@ public static class MauiProgram
             builder.Services.AddSingleton<ILoginService, LoginService>();
             builder.Services.AddSingleton<IStateKeeper, StateKeeper>();
 
-
             builder.Services.AddTransient<ICustomerService, CustomerService>();
             builder.Services.AddTransient<IBrowserService, BrowserService>();
             builder.Services.AddTransient<ICassettoFiscaleService, CassettoFiscaleService>();
@@ -73,6 +72,7 @@ public static class MauiProgram
             builder.Services.AddTransient<ICuService, CuService>();
             builder.Services.AddTransient<IAnagraficaService, AnagraficaService>();
             builder.Services.AddTransient<ICreditoIvaService, CreditoIvaService>();
+            builder.Services.AddTransient<IDatiDelRegistroService, DatiDelRegistroService>();
             builder.Services.AddTransient<IFileDownloaderService, FileDownloaderService>();
 
             builder.Services.AddTransient<IDownloadContext, DownloadContext>();
@@ -80,6 +80,7 @@ public static class MauiProgram
             builder.Services.AddTransient<IDownloadStrategy, CuDownloadStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, AnagraficaStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, CreditoIvaStrategy>();
+            builder.Services.AddTransient<IDownloadStrategy, DatiRegistroStrategy>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

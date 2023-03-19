@@ -126,6 +126,40 @@
     </div>
 }
 
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@IsOperationSelected(typeof(DatiRegistro))"
+           id="datiRegistro"
+           @onchange="@(ToggleYearlyOperation<DatiRegistro>)">
+    <label class="form-check-label"
+           for="datiRegistro">
+        Dati registro
+    </label>
+</div>
+
+@if (IsOperationSelected(typeof(DatiRegistro)))
+{
+    <div class="mt-2">
+        <div class="form-floating">
+            <select class="form-select"
+                    id="datiRegistroSelect"
+                    @onchange="@(ChangeYear<DatiRegistro>)">
+                @for (var i = DateTime.Now.Year; i >= 2015; i--)
+                {
+                    <option value="@i"
+                            selected="@(IsYearlySelected<DatiRegistro>(i))">
+                        @i
+                    </option>
+                }
+            </select>
+            <label for="datiRegistroSelect">
+                Dati registro
+            </label>
+        </div>
+    </div>
+}
+
 <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
 
     <button type="button"

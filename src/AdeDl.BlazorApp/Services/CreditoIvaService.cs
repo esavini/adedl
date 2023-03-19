@@ -36,5 +36,6 @@ public class CreditoIvaService : ICreditoIvaService
         var fileName = $"{DateTime.Now:yyyy.MM.dd} - Credito IVA {request.Year} - Cassetto Fiscale.pdf";
 
         await browserService.PdfAsync(Path.Combine(subFolderPath, fileName));
+        await browserService.Close();
     }
 }
