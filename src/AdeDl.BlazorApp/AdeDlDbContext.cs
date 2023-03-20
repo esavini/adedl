@@ -23,4 +23,6 @@ public class AdeDlDbContext : DbContext
     public DbSet<Credential> Credentials { get; set; } = default!; 
     
     public DbSet<Customer> Customers { get; set; } = default!;
+    
+    public DbSet<VersamentoGenerico> Versamenti { get; set; } = default!;
 }

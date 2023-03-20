@@ -1,7 +1,16 @@
 ﻿@using AdeDl.BlazorApp.Models
 @using AdeDl.BlazorApp.Models.Operations
 @using AdeDl.BlazorApp.Services
-<p>
+
+<div class="row justify-content-around">
+
+<div class="col-4">
+
+<h3>
+    Operazioni
+</h3>
+
+<div>
     @if (_selectedCustomersCount == 1)
     {
         @("Un cliente selezionato.")
@@ -10,7 +19,17 @@
     {
         @($"{_selectedCustomersCount} clienti selezionati.")
     }
-</p>
+</div>
+
+<div>
+    @if (_operations.Count == 0)
+    {
+        @("Nessuna operazione selezionata.")
+    } else 
+    {
+        @($"{_operations.Count} operazioni selezionate.")
+    }
+</div>
 
 <div class="form-check">
     <input class="form-check-input"
@@ -194,7 +213,64 @@
     </div>
 }
 
-<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+<div class="form-check mt-3">
+    <input class="form-check-input"
+           type="checkbox"
+           checked="@(_versamentiGenerici is not null)"
+           id="versamentiGenerici"
+           @onchange="@(ToggleMenuVersamentiGenerici)">
+    <label class="form-check-label"
+           for="versamentiGenerici">
+        Versamenti generici
+    </label>
+</div>
+
+@if (_versamentiGenerici is not null)
+{
+    <button class="btn btn-light my-2"
+            @onclick="NewVersamento">
+        Aggiungi versamento
+    </button>
+
+    <table class="table">
+
+        <tbody>
+
+        <Virtualize Items="_versamentiGenerici">
+
+            <tr>
+                <td>
+                    <input class="form-check-input"
+                           type="checkbox"
+                           checked="@(IsVersamentoGenericoChecked(context))"
+                           @onchange="@(_ => ToggleVersamentoGenerico(context))">
+                </td>
+                <td>
+                    @context.Name
+                </td>
+                <td>
+                    <button type="button"
+                            role="button"
+                            class="btn btn-sm btn-primary me-2"
+                            @onclick="@(() => EditVersamento(context))">
+                        Modifica
+                    </button>
+                    <button type="button"
+                            role="button"
+                            class="btn btn-sm btn-danger"
+                            @onclick="@(() => DeleteVersamento(context))">
+                        Elimina
+                    </button>
+                </td>
+            </tr>
+
+        </Virtualize>
+
+        </tbody>
+    </table>
+}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3 mb-5">
 
     <button type="button"
             role="button"
@@ -214,4 +290,247 @@
         </button>
     }
 
+</div>
+
+</div>
+
+@if (_versamentoGenericoInModifica is not null)
+{
+    <div class="col-4">
+
+    <h3>
+        @if (_versamentoGenericoInModifica.Id is not null)
+        {
+            @("Modifica versamento")
+        }
+        else
+        {
+            @("Crea versamento")
+        }
+    </h3>
+
+    <EditForm Model="_versamentoGenericoInModifica"
+              OnValidSubmit="Submit">
+
+    <DataAnnotationsValidator/>
+
+    <div class="form-floating">
+        <InputText type="text"
+                   class="form-control"
+                   autocomplete="no"
+                   id="nomeVersamento"
+                   @bind-Value="_versamentoGenericoInModifica.Name"
+                   placeholder="Nome del versamento"/>
+        <label for="nomeVersamento">Nome del versamento</label>
+    </div>
+    <div class="text-danger">
+        <ValidationMessage For="@(() => _versamentoGenericoInModifica.Name)"/>
+    </div>
+
+    <select class="form-select mt-3"
+            @onchange="ToggleVersamentoGenericoPeriodType">
+        <option value="0"
+                selected="@(_versamentoGenericoInModifica.PeriodYear is not null)">
+            Versamenti per anno
+        </option>
+        <option value="1"
+                selected="@(_versamentoGenericoInModifica.PeriodFrom is not null)">
+            Versamenti per periodo
+        </option>
+    </select>
+
+    @if (_versamentoGenericoInModifica.PeriodYear is not null)
+    {
+        <div class="form-floating mt-3">
+            <InputNumber class="form-control"
+                         id="selectYear"
+                         min="@(2018)"
+                         max="@DateTime.Now.Year"
+                         @bind-Value="_versamentoGenericoInModifica.PeriodYear"/>
+
+            <label for="selectYear">
+                Anno
+            </label>
+        </div>
+    }
+    else
+    {
+        <div class="form-floating mt-3">
+            <InputDate class="form-control"
+                       id="selectFrom"
+                       @bind-Value="_versamentoGenericoInModifica.PeriodFrom"/>
+
+            <label for="selectFrom">
+                Dal
+            </label>
+        </div>
+        <div class="form-floating mt-3">
+            <InputDate class="form-control"
+                       id="selectTo"
+                       @bind-Value="_versamentoGenericoInModifica.PeriodTo"/>
+
+            <label for="selectTo">
+                Al
+            </label>
+        </div>
+    }
+    <div class="form-floating mt-3">
+        <InputSelect id="percipiente"
+                     class="form-select"
+                     @bind-Value="@_versamentoGenericoInModifica.Ente">
+
+            <option value="@("")">
+                -- Seleziona un ente --
+            </option>
+
+            <option value="@("01")">
+                ERARIO
+            </option>
+
+            <option value="@("02")">
+                REGIONE
+            </option>
+
+            <option value="@("03")">
+                ENTI LOCALI
+            </option>
+
+            <option value="@("04")">
+                ADDIZIONALE COMUNALE
+            </option>
+
+            <option value="@("05")">
+                CAMERE DI COMMERCIO
+            </option>
+
+            <option value="@("06")">
+                INPS
+            </option>
+
+            <option value="@("07")">
+                ALTRI ENTI PREVIDENZIALI - escluso INAIL
+            </option>
+
+            <option value="@("08")">
+                ICI/IMU/TARES ED ALTRI TRIBUTI COMUNALI
+            </option>
+
+            <option value="@("09")">
+                ACCISE/MONOPOLI/ASSICURAZIONI
+            </option>
+
+            <option value="@("10")">
+                ISOP
+            </option>
+
+            <option value="@("11")">
+                TOSAP/COSAP/TARSU
+            </option>
+        </InputSelect>
+        <label for="percipiente">
+            Percipiente
+        </label>
+    </div>
+
+    @if (_versamentoGenericoInModifica.Ente is null or "")
+    {
+        <div class="form-floating mt-3">
+            <InputText class="form-control"
+                       id="tributo1"
+                       @bind-Value="_versamentoGenericoInModifica.CodiceTributo1"/>
+
+            <label for="tributo1">
+                Tributo 1
+            </label>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(_versamentoGenericoInModifica.CodiceTributo1))
+        {
+            <div class="form-floating mt-3">
+                <InputText class="form-control"
+                           id="tributo2"
+                           @bind-Value="_versamentoGenericoInModifica.CodiceTributo2"/>
+
+                <label for="tributo2">
+                    Tributo 2
+                </label>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_versamentoGenericoInModifica.CodiceTributo2))
+        {
+            <div class="form-floating mt-3">
+                <InputText class="form-control"
+                           id="tributo3"
+                           @bind-Value="_versamentoGenericoInModifica.CodiceTributo3"/>
+
+                <label for="tributo3">
+                    Tributo 3
+                </label>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_versamentoGenericoInModifica.CodiceTributo3))
+        {
+            <div class="form-floating mt-3">
+                <InputText class="form-control"
+                           id="tributo4"
+                           @bind-Value="_versamentoGenericoInModifica.CodiceTributo4"/>
+
+                <label for="tributo4">
+                    Tributo 4
+                </label>
+            </div>
+        }
+
+        <div class="form-floating mt-3">
+            <InputText class="form-control"
+                       id="prefisso"
+                       @bind-Value="_versamentoGenericoInModifica.Prefisso"/>
+
+            <label for="prefisso">
+                Prefisso
+            </label>
+        </div>
+    }
+
+    <div class="form-check mt-3">
+        <InputCheckbox class="form-check-input"
+                       id="credito"
+                       @bind-Value="_versamentoGenericoInModifica.Credito"/>
+        <label class="form-check-label"
+               for="credito">
+            Credito
+        </label>
+    </div>
+
+    <div class="form-check mt-2">
+        <InputCheckbox class="form-check-input"
+                       id="coobbligato"
+                       @bind-Value="_versamentoGenericoInModifica.Coobbligato"/>
+        <label class="form-check-label"
+               for="coobbligato">
+            Coobbligato
+        </label>
+    </div>
+
+    <div class="form-check mt-2">
+        <InputCheckbox class="form-check-input"
+                       id="NoAddizionale"
+                       @bind-Value="_versamentoGenericoInModifica.NoAddizionale"/>
+        <label class="form-check-label"
+               for="NoAddizionale">
+            Escludi addizionale comunale
+        </label>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary mt-3 mb-5">
+        Salva
+    </button>
+
+    </EditForm>
+
+    </div>
+}
 </div>

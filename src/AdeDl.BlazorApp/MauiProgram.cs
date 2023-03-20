@@ -75,6 +75,8 @@ public static class MauiProgram
             builder.Services.AddTransient<IDatiDelRegistroService, DatiDelRegistroService>();
             builder.Services.AddTransient<IVersamentiIvaService, VersamentiIvaService>();
             builder.Services.AddTransient<IFileDownloaderService, FileDownloaderService>();
+            builder.Services.AddTransient<IVersamentoGenericoService, VersamentoGenericoService>();
+            builder.Services.AddTransient<IVersamentoGenericoOperationService, VersamentoGenericoOperationService>();
 
             builder.Services.AddTransient<IDownloadContext, DownloadContext>();
             builder.Services.AddTransient<IDownloadStrategy, F24DownloadStrategy>();
@@ -83,6 +85,7 @@ public static class MauiProgram
             builder.Services.AddTransient<IDownloadStrategy, CreditoIvaStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, DatiRegistroStrategy>();
             builder.Services.AddTransient<IDownloadStrategy, VersamentiIvaStrategy>();
+            builder.Services.AddTransient<IDownloadStrategy, VersamentoGenericoStrategy>();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

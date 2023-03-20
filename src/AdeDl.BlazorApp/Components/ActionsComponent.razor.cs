@@ -1,4 +1,6 @@
-﻿using AdeDl.BlazorApp.Models;
+﻿using System.Collections;
+using AdeDl.BlazorApp.Models;
+using AdeDl.BlazorApp.Models.Database;
 using AdeDl.BlazorApp.Models.Operations;
 using AdeDl.BlazorApp.Services;
 using AdeDl.BlazorApp.Strategies.DownloadStrategy;
@@ -12,11 +14,17 @@ public partial class ActionsComponent
 
     [Inject] private IDownloadContext DownloadContext { get; set; } = default!;
 
+    [Inject] private IVersamentoGenericoService VersamentoGenericoService { get; set; } = default!;
+
     private int _selectedCustomersCount = 0;
 
     private List<IOperation> _operations = new();
 
     private bool _isDownloading;
+
+    private ICollection<VersamentoGenerico>? _versamentiGenerici;
+
+    private VersamentoGenerico? _versamentoGenericoInModifica;
 
     protected override void OnInitialized()
     {
@@ -88,5 +96,105 @@ public partial class ActionsComponent
     {
         _cts?.Cancel();
         StateHasChanged();
+    }
+
+    private void ToggleVersamentoGenericoPeriodType(ChangeEventArgs e)
+    {
+        if (e.Value is null or "0")
+        {
+            _versamentoGenericoInModifica!.PeriodYear = DateTime.Now.Year;
+            _versamentoGenericoInModifica!.PeriodFrom = null;
+            _versamentoGenericoInModifica!.PeriodTo = null;
+        }
+        else
+        {
+            _versamentoGenericoInModifica!.PeriodYear = null;
+            _versamentoGenericoInModifica!.PeriodFrom = new DateTime(DateTime.Now.Year, 1, 1);
+            _versamentoGenericoInModifica!.PeriodTo = new DateTime(DateTime.Now.Year, 12, 31);
+        }
+    }
+
+    private async Task Submit()
+    {
+        if (_versamentoGenericoInModifica is null) return;
+
+        await VersamentoGenericoService.SaveAsync(_versamentoGenericoInModifica);
+
+        _versamentoGenericoInModifica = null;
+        _versamentiGenerici = await VersamentoGenericoService.GetAll();
+        StateHasChanged();
+    }
+
+    private async Task ToggleMenuVersamentiGenerici()
+    {
+        if (_versamentiGenerici is null)
+            _versamentiGenerici = await VersamentoGenericoService.GetAll();
+
+        else
+            _versamentiGenerici = null;
+
+        StateHasChanged();
+    }
+
+    private void NewVersamento()
+    {
+        _versamentoGenericoInModifica = new VersamentoGenerico
+        {
+            PeriodYear = DateTime.Now.Year
+        };
+
+        StateHasChanged();
+    }
+
+    private async Task EditVersamento(VersamentoGenerico v)
+    {
+        _versamentoGenericoInModifica = v;
+        _versamentiGenerici = await VersamentoGenericoService.GetAll();
+        StateHasChanged();
+    }
+
+    private async Task DeleteVersamento(VersamentoGenerico v)
+    {
+        _operations.RemoveAll(o =>
+            o.GetType() == typeof(VersamentoGenericoOperation)
+            && ((VersamentoGenericoOperation)o).Id == v.Id
+        );
+
+        await VersamentoGenericoService.DeleteAsync(v);
+
+        if (_versamentoGenericoInModifica is not null && _versamentoGenericoInModifica.Id == v.Id)
+            _versamentoGenericoInModifica = null;
+
+        _versamentiGenerici = await VersamentoGenericoService.GetAll();
+
+        StateHasChanged();
+    }
+
+    private void ToggleVersamentoGenerico(VersamentoGenerico v)
+    {
+        if (IsVersamentoGenericoChecked(v))
+        {
+            _operations.RemoveAll(o =>
+                o.GetType() == typeof(VersamentoGenericoOperation)
+                && ((VersamentoGenericoOperation)o).Id == v.Id
+            );
+        }
+        else
+        {
+            _operations.Add(new VersamentoGenericoOperation
+            {
+                Id = v.Id,
+            });
+        }
+
+        StateHasChanged();
+    }
+
+    private bool IsVersamentoGenericoChecked(VersamentoGenerico v)
+    {
+        return _operations.Any(o =>
+            o.GetType() == typeof(VersamentoGenericoOperation)
+            && ((VersamentoGenericoOperation)o).Id == v.Id
+        );
     }
 }
