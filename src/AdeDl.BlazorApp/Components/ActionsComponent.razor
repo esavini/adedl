@@ -10,7 +10,18 @@
     Operazioni
 </h3>
 
-<div>
+@if (_completedOperationsPercentage is not null)
+{
+    <div class="progress mt-3">
+        <div class="progress-bar" 
+             role="progressbar" style="@($"width: {_completedOperationsPercentage}%")" 
+             aria-valuenow="@_completedOperationsPercentage"
+             aria-valuemin="0"
+             aria-valuemax="100"></div>
+    </div>
+}
+
+<div class="mt-3">
     @if (_selectedCustomersCount == 1)
     {
         @("Un cliente selezionato.")
@@ -25,13 +36,14 @@
     @if (_operations.Count == 0)
     {
         @("Nessuna operazione selezionata.")
-    } else 
+    }
+    else
     {
         @($"{_operations.Count} operazioni selezionate.")
     }
 </div>
 
-<div class="form-check">
+<div class="form-check mt-3">
     <input class="form-check-input"
            type="checkbox"
            checked="@IsOperationSelected(typeof(Anagrafica))"

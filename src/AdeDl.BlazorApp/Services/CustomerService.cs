@@ -25,6 +25,12 @@ public class CustomerService : ICustomerService
 
         await _adeDlDbContext.SaveChangesAsync();
     }
+    
+    public Task DeleteAsync(Customer customer)
+    {
+        _adeDlDbContext.Remove(customer);
+        return _adeDlDbContext.SaveChangesAsync();
+    }
 
     public async Task<ICollection<Customer>> ListCustomersAsync(string credentialId) =>
         await _adeDlDbContext.Customers

@@ -17,7 +17,7 @@ public class DownloadContext : IDownloadContext
     }
 
     public async Task DownloadAsync(Customer customer, IEnumerable<IOperation> operations,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, Action onOperationCompleted)
     {
         foreach (var operation in operations)
         {
@@ -27,11 +27,12 @@ public class DownloadContext : IDownloadContext
             
             if (strategy is null)
             {
-                _logger.LogWarning("No strategy found for operation {operation}", operation);
+                _logger.LogWarning("No strategy found for operation {@Operation}", operation);
                 continue;
             }
 
             await strategy.DownloadAsync(customer, operation, cancellationToken);
+            onOperationCompleted.Invoke();
         }
     }
 }

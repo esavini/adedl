@@ -10,6 +10,8 @@ public partial class SelectCustomerRow
     [Inject] private ICassettoFiscaleService CassettoFiscaleService { get; set; } = default!;
 
     [Parameter] public Customer Customer { get; set; } = default!;
+    
+    [Parameter] public Action<Customer> OnDelete { get; set; } = default!;
 
     [CascadingParameter(Name = nameof(AddCustomerCascadeModel))]
     public AddCustomerCascadeModel AddCustomerCascadeModel { get; set; } = null!;
@@ -33,5 +35,15 @@ public partial class SelectCustomerRow
     {
          AddCustomerCascadeModel.ToggleCustomerSelection(Customer);
          StateHasChanged();
+    }
+
+    private async Task Delete()
+    {
+        if (IsSelected())
+        {
+            AddCustomerCascadeModel.ToggleCustomerSelection(Customer);
+        }
+        
+        OnDelete.Invoke(Customer);
     }
 }

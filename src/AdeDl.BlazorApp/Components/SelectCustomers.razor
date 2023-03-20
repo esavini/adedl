@@ -10,9 +10,11 @@
     
     <AddCustomerForm/>
     
-<div class="mb-3">
-  <label for="exampleFormControlInput1" class="form-label">Email address</label>
-  <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+<div class="my-3">
+    <input type="text" 
+           class="form-control" 
+           placeholder="Ricerca"
+           @onchange="ChangeFilter"/>
 </div> 
     
     <table class="table mt-4">
@@ -26,10 +28,11 @@
         </thead>
         <tbody>
     
-        <Virtualize Items="_customers">
+        <Virtualize Items="_customers"
+                    @ref="_virtualize">
     
-            <SelectCustomerRow @key="@(context.Id)"
-                               Customer="context"/>
+            <SelectCustomerRow Customer="context"
+                               OnDelete="DeleteCustomer"/>
     
         </Virtualize>
     

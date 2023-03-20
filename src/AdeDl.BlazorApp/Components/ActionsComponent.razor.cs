@@ -80,6 +80,8 @@ public partial class ActionsComponent
     private async void Download()
     {
         _isDownloading = true;
+        _completedOperations = 0;
+        _completedOperationsPercentage = 0;
         _cts = new CancellationTokenSource();
 
         StateHasChanged();
@@ -88,13 +90,32 @@ public partial class ActionsComponent
         {
             if (_cts.IsCancellationRequested) continue;
 
-            await DownloadContext.DownloadAsync(customer, _operations, _cts.Token);
+            await DownloadContext.DownloadAsync(customer, _operations, _cts.Token, OnOperationCompleted);
         }
+        
+        _completedOperationsPercentage = null;
+        _isDownloading = false;
+        _cts = null;
+        StateHasChanged();
+    }
+
+    private int _completedOperations;
+    
+    private int? _completedOperationsPercentage;
+    
+    private void OnOperationCompleted()
+    {
+        _completedOperations++;
+        _completedOperationsPercentage = (int) ((double) _completedOperations / _operations.Count * 100);
+        StateHasChanged();
     }
 
     private void Abort()
     {
         _cts?.Cancel();
+        _completedOperationsPercentage = null;
+        _isDownloading = false;
+        _cts = null;
         StateHasChanged();
     }
 
